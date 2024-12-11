@@ -26,19 +26,23 @@ public class GitHubManager : EditorWindow
         visualTreeAsset.CloneTree(rootVisualElement);
         rootVisualElement.styleSheets.Add(styleSheet);
 
-        CreateButton(rootVisualElement);
+        var repoSettings = CreateButton(rootVisualElement);
 
-        SelectFolderButton(rootVisualElement);
+        string localRepoDir = SelectFolderButton(rootVisualElement);
+
+        ConnectButton(rootVisualElement, localRepoDir);
+        ConnectLocalToRemoteRepo(localRepoDir, repoSettings);
     }
 
-    private void CreateButton(VisualElement visualElement)
+    private RepositorySettings CreateButton(VisualElement visualElement)
     {
         var createButton = visualElement.Q<Button>("Create");
+        var repositorySetting = new RepositorySettings();
         createButton.clicked += () =>
         {
             // フィールドから値を取得
             string accessToken = visualElement.Q<TextField>("AccessToken").value;
-            var repositorySetting = new RepositorySettings
+            repositorySetting = new RepositorySettings
             {
                 name = visualElement.Q<TextField>("RepositoryName").value,
                 description = visualElement.Q<TextField>("Description").value,
@@ -55,6 +59,7 @@ public class GitHubManager : EditorWindow
             // コマンドを実行
             CreateRepository(accessToken, repositorySetting);
         };
+        return repositorySetting;
     }
 
     private void CreateRepository(string accessToken, RepositorySettings settings)
@@ -72,19 +77,19 @@ public class GitHubManager : EditorWindow
         RunCommand(command);
     }
 
-    private void SelectFolderButton(VisualElement visualElement)
+    private string SelectFolderButton(VisualElement visualElement)
     {
         var selectFolderButton = visualElement.Q<Button>("SelectFolder");
+        string folderPath = null;
         selectFolderButton.clicked += () =>
         {
-            string folderPath = EditorUtility.OpenFolderPanel("select", "", "");
+            folderPath = EditorUtility.OpenFolderPanel("select", "", "");
             if (!string.IsNullOrEmpty(folderPath))
             {
                 UnityEngine.Debug.Log("Selected folder: " + folderPath);
             }
-
-            SetLocalRepository(folderPath);
         };
+        return folderPath;
     }
 
     private void SetLocalRepository(string localRepoPath, string user, string repoName)
@@ -136,6 +141,30 @@ public class GitHubManager : EditorWindow
         {
             UnityEngine.Debug.LogError("Error: " + errorOutput);
         }
+    }
+
+    private void ConnectButton(VisualElement visualElement, string folderPath, RepositorySettings repoSettings)
+    {
+        var connectButton = visualElement.Q<Button>("Connect");
+        connectButton.clicked += () =>
+        {
+            string userName = visualElement.Q<TextField>("RepositoryName").value;
+            if (string.IsNullOrEmpty(userName))
+            {
+                UnityEngine.Debug.LogError("UserName is required.");
+                return;
+            }
+            ConnectLocalToRemoteRepo(folderPath, userName, repoSettings);
+        };
+    }
+
+    private void ConnectLocalToRemoteRepo(string folderPath, string userName, RepositorySettings repoSettings)
+    {
+        string command = $"cd {folderPath}";
+
+        RunCommand(command);
+
+        string command2 = $"git remote add origin https://github.com/{userName}/{repoSettings.name}.git";
     }
 }
 
