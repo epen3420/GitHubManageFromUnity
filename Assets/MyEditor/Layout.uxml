@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:TextField label="Access Token" placeholder-text="filler text" name="AccessToken" />
+    <ui:TextField label="Repository Name" placeholder-text="filler text" name="RepositoryName" />
+    <ui:TextField label="Description" placeholder-text="filler text" name="Description" />
+    <ui:Toggle label="private" name="Private" />
+    <ui:Button text="Create" name="Create" />
+    <ui:Button text="selectfolder" name="SelectFolder" />
+</ui:UXML>
