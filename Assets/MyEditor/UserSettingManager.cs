@@ -1,12 +1,12 @@
 using UnityEditor;
 using UnityEngine;
 
-public class SetGitHubUserSettings : EditorWindow
+public class UserSettingManager : EditorWindow
 {
     public static void ShowWindow(Rect buttonRect)
     {
         // ツールウィンドウの作成と表示
-        var window = CreateInstance<SetGitHubUserSettings>();
+        var window = CreateInstance<UserSettingManager>();
         window.ShowAuxWindow();
     }
 

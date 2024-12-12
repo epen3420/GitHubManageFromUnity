@@ -69,11 +69,13 @@ public class RepositoryManager
     /// </summary>
     /// <param name="userName"></param>
     /// <param name="repoName"></param>
-    public void SetRepository(string userName, string repoName)
+    public void SetRepository(string repoName)
     {
+        string value = TokenManager.GetToken();
+        string[] values = value.Split('%');
         string changeDir = $"cd {localRepoPath}";
         string initLocalRepo = "git init";
-        string addRemoteRepo = $"git remote add origin https://github.com/{userName}/{repoName}.git";
+        string addRemoteRepo = $"git remote add origin https://github.com/{values[0]}/{repoName}.git";
 
         commandRunner.RunCommand($"{changeDir} & {initLocalRepo} & {addRemoteRepo}");
     }

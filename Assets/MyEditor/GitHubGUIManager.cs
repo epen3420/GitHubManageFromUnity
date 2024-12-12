@@ -34,12 +34,10 @@ public class GitHubGUIManager : EditorWindow
         {
             if (Event.current.type == EventType.Repaint)
                 dropDownButtonRect = GUILayoutUtility.GetLastRect();
-            SetGitHubUserSettings.ShowWindow(dropDownButtonRect);
+            UserSettingManager.ShowWindow(dropDownButtonRect);
         }
 
         // ユーザー入力フィールド
-        userName = EditorGUILayout.TextField("User Name", userName);
-        token = EditorGUILayout.PasswordField("Access Token", token);
         repositoryName = EditorGUILayout.TextField("Repository Name", repositoryName);
         description = EditorGUILayout.TextField("Description", description);
         isPublishing = EditorGUILayout.Toggle("Publish", isPublishing);
@@ -72,7 +70,7 @@ public class GitHubGUIManager : EditorWindow
                 description = description,
                 @private = !isPublishing
             };
-            CreateAndSetRepository(repositorySettings, userName, repositoryName);
+            CreateAndSetRepository(repositorySettings, repositoryName);
         }
 
         // GitHubDesktopの起動
@@ -88,10 +86,10 @@ public class GitHubGUIManager : EditorWindow
     /// <param name="settings"></param>
     /// <param name="userName"></param>
     /// <param name="repoName"></param>
-    private async void CreateAndSetRepository(RepositorySettings settings, string userName, string repoName)
+    private async void CreateAndSetRepository(RepositorySettings settings, string repoName)
     {
         await repositoryManager.CreateRepository(settings);
 
-        repositoryManager.SetRepository(userName, repoName);
+        repositoryManager.SetRepository(repoName);
     }
 }
