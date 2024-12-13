@@ -1,0 +1,7 @@
+{
+  "name": "com.epen.utilities",
+  "version": "1.0.0",
+  "displayName": "GitHub Utility for Unity (by epen)",
+  "description": "description: An unofficial Unity Editor extension for managing GitHub repositories directly within Unity.",
+  "unity": "2020.3"
+}
