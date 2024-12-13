@@ -26,7 +26,7 @@ public class RepositoryManager
     /// </summary>
     /// <param name="settings"></param>
     /// <returns></returns>
-    public async Task CreateRepository(RepositorySettings settings)
+    public async Task<string> CreateRepository(RepositorySettings settings)
     {
         // GitHub APIエンドポイント
         string url = "https://api.github.com/user/repos";
@@ -39,7 +39,7 @@ public class RepositoryManager
             using (var httpClient = new HttpClient())
             {
                 // 必要なヘッダーを設定
-                httpClient.DefaultRequestHeaders.Add("Authorization", $"token {TokenManager.GetToken()}");
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"token {TokenManager.GetToken().Split('%')[1]}");
                 httpClient.DefaultRequestHeaders.Add("User-Agent", "UnityEditorGitHubAPI");
 
                 // リクエストコンテンツを準備
@@ -49,18 +49,18 @@ public class RepositoryManager
 
                 if (response.IsSuccessStatusCode)
                 {
-                    Debug.Log("Repository created successfully!");
+                    return "Repository created successfully!";
                 }
                 else
                 {
                     string error = await response.Content.ReadAsStringAsync();
-                    Debug.LogError($"Failed to create repository: {response.StatusCode} - {error}");
+                    return $"Failed to create repository: {response.StatusCode} - {error}";
                 }
             }
         }
         catch (System.Exception ex)
         {
-            Debug.LogError($"Error creating repository: {ex.Message}");
+            return $"Error creating repository: {ex.Message}";
         }
     }
 
@@ -69,15 +69,14 @@ public class RepositoryManager
     /// </summary>
     /// <param name="userName"></param>
     /// <param name="repoName"></param>
-    public void SetRepository(string repoName)
+    public void InitLocalRepo(string repoName)
     {
         string value = TokenManager.GetToken();
         string[] values = value.Split('%');
         string changeDir = $"cd {localRepoPath}";
-        string initLocalRepo = "git init";
-        string addRemoteRepo = $"git remote add origin https://github.com/{values[0]}/{repoName}.git";
+        string cloneRepo = $"git clone https://github.com/{values[0]}/{repoName}.git {localRepoPath}";
 
-        commandRunner.RunCommand($"{changeDir} & {initLocalRepo} & {addRemoteRepo}");
+        commandRunner.RunCommand($"{changeDir} & {cloneRepo}");
     }
 
     /// <summary>

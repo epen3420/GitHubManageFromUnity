@@ -15,10 +15,10 @@ public class UserSettingManager : EditorWindow
 
     private void OnEnable()
     {
-        var value = TokenManager.GetToken();
-        var values = value.Split('%');
-        if (!(string.IsNullOrEmpty(values[0]) || string.IsNullOrEmpty(values[1])))
+        string value = TokenManager.GetToken();
+        if (value.Contains('%'))
         {
+            var values = value.Split('%');
             userName = values[0];
             token = values[1];
         }

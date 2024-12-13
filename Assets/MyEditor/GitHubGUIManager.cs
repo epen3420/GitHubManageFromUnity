@@ -4,13 +4,11 @@ using UnityEngine;
 public class GitHubGUIManager : EditorWindow
 {
     private RepositoryManager repositoryManager;
-    private string userName = "User Name"; // GitHubのユーザ名
-    private string token; // トークン
+    private Rect dropDownButtonRect;
     private string repositoryName = "New_Repository"; // 作成するリポジトリ名
     private string description = "Description"; // 作成するレポジトリの説明
     private bool isPublishing; // レポジトリの公開設定
-    private Rect dropDownButtonRect;
-
+    private string helpMessage;
 
     [MenuItem("Tools/GitHub/Create Repository (HTTP)")]
     public static void ShowWindow()
@@ -30,7 +28,7 @@ public class GitHubGUIManager : EditorWindow
         GUILayout.Label("GitHub Repository Creator", EditorStyles.boldLabel);
 
         // GithubのAPIを入手できるサイトに飛ばす
-        if (GUILayout.Button("Get Your GitHub API"))
+        if (GUILayout.Button("User Settings"))
         {
             if (Event.current.type == EventType.Repaint)
                 dropDownButtonRect = GUILayoutUtility.GetLastRect();
@@ -41,6 +39,19 @@ public class GitHubGUIManager : EditorWindow
         repositoryName = EditorGUILayout.TextField("Repository Name", repositoryName);
         description = EditorGUILayout.TextField("Description", description);
         isPublishing = EditorGUILayout.Toggle("Publish", isPublishing);
+
+        // ボタン押下時にリポジトリを作成
+        if (GUILayout.Button("Create Repository"))
+        {
+            // レポジトリ設定を作成
+            var repositorySettings = new RepositorySettings
+            {
+                name = repositoryName,
+                description = description,
+                @private = !isPublishing
+            };
+            CreateRepository(repositorySettings);
+        }
 
         //ローカルレポジトリのディレクトリ選択
         if (GUILayout.Button("Select Local Repository Path"))
@@ -59,18 +70,9 @@ public class GitHubGUIManager : EditorWindow
         // 選択したローカルリポジトリのパスを表示
         EditorGUILayout.LabelField("Local Repository Path:", repositoryManager.LocalRepoPath);
 
-        // ボタン押下時にリポジトリを作成
-        if (GUILayout.Button("Create & Set Repository"))
+        if (GUILayout.Button("Initialize Local Repository"))
         {
-            TokenManager.SaveToken(token);
-            // レポジトリ設定を作成
-            var repositorySettings = new RepositorySettings
-            {
-                name = repositoryName,
-                description = description,
-                @private = !isPublishing
-            };
-            CreateAndSetRepository(repositorySettings, repositoryName);
+            repositoryManager.InitLocalRepo(repositoryName);
         }
 
         // GitHubDesktopの起動
@@ -78,6 +80,8 @@ public class GitHubGUIManager : EditorWindow
         {
             repositoryManager.OpenGitHubDesktop();
         }
+
+        EditorGUILayout.HelpBox(helpMessage, MessageType.Info);
     }
 
     /// <summary>
@@ -86,10 +90,10 @@ public class GitHubGUIManager : EditorWindow
     /// <param name="settings"></param>
     /// <param name="userName"></param>
     /// <param name="repoName"></param>
-    private async void CreateAndSetRepository(RepositorySettings settings, string repoName)
+    private async void CreateRepository(RepositorySettings settings)
     {
-        await repositoryManager.CreateRepository(settings);
+        helpMessage = await repositoryManager.CreateRepository(settings);
 
-        repositoryManager.SetRepository(repoName);
+        Application.OpenURL($"https://github.com/{TokenManager.GetToken().Split('%')[0]}/{repositoryName}");
     }
 }
