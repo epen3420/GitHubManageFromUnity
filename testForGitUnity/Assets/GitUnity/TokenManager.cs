@@ -2,7 +2,7 @@ using UnityEditor;
 
 public class TokenManager
 {
-    private const string TokenKey = "GitHubAccessToken";
+    private const string TOKEN_KEY = "ACCESS_TOKEN_KEY";
 
     /// <summary>
     /// トークンを保存
@@ -10,7 +10,7 @@ public class TokenManager
     /// <param name="token"></param>
     public static void SaveToken(string token)
     {
-        EditorPrefs.SetString(TokenKey, token);
+        EditorPrefs.SetString(TOKEN_KEY, token);
     }
 
     /// <summary>
@@ -19,7 +19,7 @@ public class TokenManager
     /// <returns></returns>
     public static string GetToken()
     {
-        return EditorPrefs.HasKey(TokenKey) ? EditorPrefs.GetString(TokenKey) : null;
+        return EditorPrefs.HasKey(TOKEN_KEY) ? EditorPrefs.GetString(TOKEN_KEY) : null;
     }
 
     /// <summary>
@@ -27,9 +27,9 @@ public class TokenManager
     /// </summary>
     public static void DeleteToken()
     {
-        if (EditorPrefs.HasKey(TokenKey))
+        if (EditorPrefs.HasKey(TOKEN_KEY))
         {
-            EditorPrefs.DeleteKey(TokenKey);
+            EditorPrefs.DeleteKey(TOKEN_KEY);
         }
     }
 }

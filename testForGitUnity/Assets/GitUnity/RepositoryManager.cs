@@ -19,6 +19,9 @@ public class RepositoryManager
             localRepoPath = value;
         }
     }
+    private const string GIT_INIT = "git init";
+    private const string GIT_PULL_REMOTE = "git pull origin main --allow-unrelated-histories";
+    private const string GIT_RENAME_DEFAULT_BRANCH = "git branch -m master main";
 
 
     /// <summary>
@@ -26,7 +29,7 @@ public class RepositoryManager
     /// </summary>
     /// <param name="settings"></param>
     /// <returns></returns>
-    public async Task<string> CreateRepository(RepositorySettings settings)
+    public async Task CreateRepository(RepositorySettings settings)
     {
         // GitHub APIエンドポイント
         string url = "https://api.github.com/user/repos";
@@ -49,24 +52,21 @@ public class RepositoryManager
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return "Repository created successfully!";
+                    Debug.Log("Repository created successfully!");
                 }
                 else
                 {
                     string error = await response.Content.ReadAsStringAsync();
-                    return $"Failed to create repository: {response.StatusCode} - {error}";
+                    Debug.Log($"Failed to create repository: {response.StatusCode} - {error}");
                 }
             }
         }
         catch (System.Exception ex)
         {
-            return $"Error creating repository: {ex.Message}";
+            Debug.Log($"Error creating repository: {ex.Message}");
         }
     }
 
-    private const string GIT_INIT = "git init";
-    private const string GIT_PULL_REMOTE = "git pull origin main --allow-unrelated-histories";
-    private const string GIT_RENAME_DEFAULT_BRANCH = "git branch -m master main";
     /// <summary>
     /// フォルダパスの初期化
     /// </summary>

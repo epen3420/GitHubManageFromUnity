@@ -1,21 +1,21 @@
 using UnityEditor;
 using UnityEngine;
 
-public class GitHubGUIManager : EditorWindow
+public class GUIManager : EditorWindow
 {
+    [MenuItem("Tools/GitUnity/Set Repository")]
+    public static void ShowWindow()
+    {
+        // ツールウィンドウの作成と表示
+        GetWindow<GUIManager>("Set Git Remote Repository");
+    }
+
     private RepositoryManager repositoryManager;
     private Rect dropDownButtonRect;
     private string repositoryName = "New_Repository"; // 作成するリポジトリ名
     private string description = "Description"; // 作成するレポジトリの説明
     private bool isPublishing; // レポジトリの公開設定
-    private string helpMessage;
 
-    [MenuItem("Tools/GitHub/Create Repository (HTTP)")]
-    public static void ShowWindow()
-    {
-        // ツールウィンドウの作成と表示
-        GetWindow<GitHubGUIManager>("Create GitHub Repository (HTTP)");
-    }
 
     private void OnEnable()
     {
@@ -24,10 +24,9 @@ public class GitHubGUIManager : EditorWindow
 
     private void OnGUI()
     {
+        GUILayout.Label("Repository Manager", EditorStyles.boldLabel);
 
-        GUILayout.Label("GitHub Repository Creator", EditorStyles.boldLabel);
-
-        // GithubのAPIを入手できるサイトに飛ばす
+        // リモートレポジトリの設定画面
         if (GUILayout.Button("User Settings"))
         {
             if (Event.current.type == EventType.Repaint)
@@ -61,15 +60,14 @@ public class GitHubGUIManager : EditorWindow
             // フォルダが選択された場合
             if (!string.IsNullOrEmpty(folderPath))
             {
-                // パスを表示
                 repositoryManager.LocalRepoPath = folderPath;
-                Debug.Log("Selected folder: " + folderPath);
             }
         }
 
         // 選択したローカルリポジトリのパスを表示
         EditorGUILayout.LabelField("Local Repository Path:", repositoryManager.LocalRepoPath);
 
+        // ローカルレポジトリの初期化
         if (GUILayout.Button("Initialize Local Repository"))
         {
             repositoryManager.InitLocalRepo(repositoryName);
@@ -80,8 +78,6 @@ public class GitHubGUIManager : EditorWindow
         {
             repositoryManager.OpenGitHubDesktop();
         }
-
-        EditorGUILayout.HelpBox(helpMessage, MessageType.Info);
     }
 
     /// <summary>
@@ -92,7 +88,7 @@ public class GitHubGUIManager : EditorWindow
     /// <param name="repoName"></param>
     private async void CreateRepository(RepositorySettings settings)
     {
-        helpMessage = await repositoryManager.CreateRepository(settings);
+        await repositoryManager.CreateRepository(settings);
 
         Application.OpenURL($"https://github.com/{TokenManager.GetToken().Split('%')[0]}/{repositoryName}");
     }
