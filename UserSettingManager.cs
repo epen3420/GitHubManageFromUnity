@@ -16,7 +16,7 @@ public class UserSettingManager : EditorWindow
     private void OnEnable()
     {
         string value = TokenManager.GetToken();
-        if (value.Contains('%'))
+        if (value != null && value.Contains('%'))
         {
             var values = value.Split('%');
             userName = values[0];

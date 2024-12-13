@@ -64,6 +64,9 @@ public class RepositoryManager
         }
     }
 
+    private const string GIT_INIT = "git init";
+    private const string GIT_PULL_REMOTE = "git pull origin main --allow-unrelated-histories";
+    private const string GIT_RENAME_DEFAULT_BRANCH = "git branch -m master main";
     /// <summary>
     /// フォルダパスの初期化
     /// </summary>
@@ -74,9 +77,10 @@ public class RepositoryManager
         string value = TokenManager.GetToken();
         string[] values = value.Split('%');
         string changeDir = $"cd {localRepoPath}";
-        string cloneRepo = $"git clone https://github.com/{values[0]}/{repoName}.git {localRepoPath}";
+        string remotePath = $"git remote add origin https://github.com/{values[0]}/{repoName}.git";
+        string InitCommand = $"{changeDir} & {GIT_INIT} & {remotePath} & {GIT_PULL_REMOTE} & {GIT_RENAME_DEFAULT_BRANCH}";
 
-        commandRunner.RunCommand($"{changeDir} & git init & git remote add origin https://github.com/{values[0]}/{repoName}.git & git pull origin main --allow-unrelated-histories");
+        commandRunner.RunCommand(InitCommand);
     }
 
     /// <summary>
