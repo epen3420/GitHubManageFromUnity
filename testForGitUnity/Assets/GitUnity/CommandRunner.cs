@@ -35,12 +35,12 @@ public class CommandRunner
 
 
         // コマンドと結果をログに表示
-        UnityEngine.Debug.Log("Command: " + command);
-        UnityEngine.Debug.Log("Output: " + output);
+        // UnityEngine.Debug.Log("Command: " + command);
+        // UnityEngine.Debug.Log("Output: " + output);
 
         if (!string.IsNullOrEmpty(errorOutput))
         {
-            UnityEngine.Debug.LogError("Error: " + errorOutput);
+            // UnityEngine.Debug.LogError("Error: " + errorOutput);
         }
     }
 }
