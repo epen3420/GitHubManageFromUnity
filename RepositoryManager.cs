@@ -76,7 +76,7 @@ public class RepositoryManager
         string changeDir = $"cd {localRepoPath}";
         string cloneRepo = $"git clone https://github.com/{values[0]}/{repoName}.git {localRepoPath}";
 
-        commandRunner.RunCommand($"{changeDir} & {cloneRepo}");
+        commandRunner.RunCommand($"{changeDir} & git init & git remote add origin https://github.com/{values[0]}/{repoName}.git & git pull origin main --allow-unrelated-histories");
     }
 
     /// <summary>
