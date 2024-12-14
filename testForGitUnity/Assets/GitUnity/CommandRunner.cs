@@ -1,5 +1,6 @@
 using System.Diagnostics;
 
+
 namespace GitUnity
 {
     public class CommandRunner
@@ -30,21 +31,12 @@ namespace GitUnity
             process.Start();
 
             // 標準出力と標準エラーの読み取り
+            string output=process.StandardOutput.ReatToEnd();
             string errorOutput = process.StandardError.ReadToEnd();
 
             process.WaitForExit();
             process.Close();
 
-<<<<<<< Updated upstream
-
-        // コマンドと結果をログに表示
-        UnityEngine.Debug.Log("Command: " + command);
-        UnityEngine.Debug.Log("Output: " + output);
-
-        if (!string.IsNullOrEmpty(errorOutput))
-        {
-            UnityEngine.Debug.LogError("Error: " + errorOutput);
-=======
             if (!string.IsNullOrEmpty(errorOutput))
             {
                 if (errorOutput.Contains("fatal") || errorOutput.Contains("error"))
@@ -52,7 +44,5 @@ namespace GitUnity
                     LogUtility.LogError(errorOutput);
                 }
             }
->>>>>>> Stashed changes
-        }
-    }
+      }
 }
