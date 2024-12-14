@@ -1,4 +1,5 @@
 using GitUnity.Repository;
+using GitUnity.Utility;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,22 +11,34 @@ namespace GitUnity.Editor
         public static void ShowWindow()
         {
             // ツールウィンドウの作成と表示
-            GetWindow<SetRepositoryWindow>("Git Repository Manager");
+            var window = GetWindow<SetRepositoryWindow>("Git Repository Manager");
+            var newPosition = new Rect(Screen.width / 2, Screen.height / 2, 500, 250);
+            window.position = newPosition;
         }
 
         private GitRepositoryManager gitRepoManager;
+        private RepositorySettings repositorySettings;
         private string repoName = "New_Repository"; // 作成するリポジトリ名
         private string repoDescription = "Description"; // 作成するレポジトリの説明
         private bool isPublic; // レポジトリの公開設定
-        private float windowWidth = 600;
-        private float windowHeight = 350;
+        private const string REPO_SETTINGS_PATH = "Assets/GitUnity/RepositorySettings.asset";
 
         private void OnEnable()
         {
-            var newPosition = new Rect(position.x, position.y, windowWidth, windowHeight);
-            position = newPosition;
-
             gitRepoManager = new GitRepositoryManager(new CommandRunner());
+
+            repositorySettings = AssetDatabase.LoadAssetAtPath<RepositorySettings>(REPO_SETTINGS_PATH);
+            if (repositorySettings == null)
+            {
+                repositorySettings = ScriptableObject.CreateInstance<RepositorySettings>();
+                AssetDatabase.CreateAsset(repositorySettings, REPO_SETTINGS_PATH);
+            }
+            else
+            {
+                repoName = repositorySettings.name;
+                repoDescription = repositorySettings.description;
+                isPublic = repositorySettings.@private;
+            }
         }
 
         private void OnGUI()
@@ -47,13 +60,13 @@ namespace GitUnity.Editor
             if (GUILayout.Button("Create Repository"))
             {
                 // レポジトリ設定を作成
-                var repositorySettings = new RepositorySettings
-                {
-                    name = repoName,
-                    description = repoDescription,
-                    @private = !isPublic
-                };
-                CreateGitRepo(repositorySettings);
+                repositorySettings.name = repoName;
+                repositorySettings.description = repoDescription;
+                repositorySettings.@private = isPublic;
+
+                AssetDatabase.SaveAssets();
+
+                CreateGitRepo();
             }
 
             //ローカルレポジトリのディレクトリ選択
@@ -75,18 +88,40 @@ namespace GitUnity.Editor
             if (GUILayout.Button("Initialize Local Repository"))
             {
                 bool success = gitRepoManager.InitLocalRepo(repoName);
-                if (!success)
+                if (success)
+                {
+                    EditorUtility.DisplayDialog("レポジトリの初期化", "レポジトリの初期化に成功しました。", "OK");
+                }
+                else
                 {
                     EditorUtility.DisplayDialog("エラー", $"レポジトリの初期化に失敗しました。詳細はログファイル({LogUtility.GetLogFilePath()})を確認してください。", "OK");
                 }
             }
 
-            // GitHubDesktopの起動
-            if (GUILayout.Button("Open GitHubDesktop"))
+            using (new GUILayout.HorizontalScope())
             {
-                if (EditorUtility.DisplayDialog("確認", "GitHubDesktopを開きますか？", "はい", "いいえ"))
+
+                if (GUILayout.Button("Open GitHub Page"))
                 {
-                    gitRepoManager.OpenGitHubDesktop();
+                    gitRepoManager.OpenGithubPage(repoName);
+                }
+
+                if (GUILayout.Button("Open your cmd or GitHubDesktop"))
+                {
+                    int dialogIndex = EditorUtility.DisplayDialogComplex("Git操作へ", "コマンドプロンプトかGitHubDesktopを開きます", "コマンドプロンプトへ", "キャンセル", "GitHubDesktopへ");
+                    switch (dialogIndex)
+                    {
+                        case 0:
+                            gitRepoManager.OpenCommandPrompt();
+                            break;
+
+                        case 2:
+                            gitRepoManager.OpenGitHubDesktop();
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -97,16 +132,16 @@ namespace GitUnity.Editor
         /// <param name="settings"></param>
         /// <param name="userName"></param>
         /// <param name="repoName"></param>
-        private async void CreateGitRepo(RepositorySettings settings)
+        private async void CreateGitRepo()
         {
-            bool success = await gitRepoManager.CreateRemoteRepo(settings);
+            bool success = await gitRepoManager.CreateRemoteRepo(REPO_SETTINGS_PATH);
 
             // 作成したレポジトリのページに飛ぶ
             if (success)
             {
                 if (EditorUtility.DisplayDialog("レポジトリの作成", "レポジトリの作成に成功しました！\nGitHubのレポジトリページを開きますか？", "はい", "いいえ"))
                 {
-                    Application.OpenURL($"https://github.com/{TokenManager.GetToken().Split('%')[0]}/{repoName}");
+                    gitRepoManager.OpenGithubPage(repoName);
                 }
             }
             else

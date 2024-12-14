@@ -1,9 +1,10 @@
+using UnityEngine;
+
 namespace GitUnity.Repository
 {
-    [System.Serializable]
-    public class RepositorySettings
+    public class RepositorySettings : ScriptableObject
     {
-        public string name;
+        public new string name;
         public string description;
         public string gitignore_template = "Unity";
         public bool @private;

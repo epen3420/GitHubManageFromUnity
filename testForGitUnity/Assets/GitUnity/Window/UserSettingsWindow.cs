@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using GitUnity.Utility;
 
 namespace GitUnity.Editor
 {
@@ -9,21 +10,19 @@ namespace GitUnity.Editor
         {
             // ツールウィンドウの作成と表示
             var window = CreateInstance<UserSettingsWindow>();
-            window.ShowAuxWindow();
+            window.ShowModal();
             window.titleContent = new GUIContent("User Settings");
+            var windowPos = window.position;
+            var newPosition = new Rect(windowPos.x, windowPos.y, 450, 200);
+            window.position = newPosition;
         }
 
 
         private string userName = "User Name";
         private string accessToken = "";
-        private float windowWidth = 450;
-        private float windowHeight = 200;
 
         private void OnEnable()
         {
-            var newPosition = new Rect(position.x, position.y, windowWidth, windowHeight);
-            position = newPosition;
-
             // 起動時にすでにトークンが保存してあれば表示する
             string tokenValue = TokenManager.GetToken();
             if (tokenValue != null && tokenValue.Contains('%'))
@@ -48,20 +47,33 @@ namespace GitUnity.Editor
             userName = EditorGUILayout.TextField("User Name", userName);
             accessToken = EditorGUILayout.PasswordField("Access Token", accessToken);
 
-            // アクセストークンの保存
-            if (GUILayout.Button("Save"))
+            using (new GUILayout.HorizontalScope())
             {
-                bool isUserNameValid = !string.IsNullOrEmpty(userName);
-                bool isAccessTokenValid = !string.IsNullOrEmpty(accessToken) && accessToken.Contains("ghp_");
+                // アクセストークンの保存
+                if (GUILayout.Button("Save"))
+                {
+                    bool isUserNameValid = !string.IsNullOrEmpty(userName);
+                    bool isAccessTokenValid = !string.IsNullOrEmpty(accessToken) && accessToken.Contains("ghp_");
 
-                if (isUserNameValid && isAccessTokenValid)
-                {
-                    TokenManager.SaveToken($"{userName}%{accessToken}");
-                    this.Close();
+                    if (isUserNameValid && isAccessTokenValid)
+                    {
+                        TokenManager.SaveToken($"{userName}%{accessToken}");
+                        EditorUtility.DisplayDialog("設定の保存", "ユーザ名、アクセストークンが正しく保存されました。", "閉じる");
+                        this.Close();
+                    }
+                    else
+                    {
+                        EditorUtility.DisplayDialog("エラー", "無効なユーザ名、アクセストークンです。\nもう一度確認してください。", "OK");
+                        LogUtility.LogError("Both User Name and a valid Access Token are required.");
+                    }
                 }
-                else
+
+                if (GUILayout.Button("Close"))
                 {
-                    LogUtility.LogError("Both User Name and a valid Access Token are required.");
+                    if (EditorUtility.DisplayDialog("確認", "保存せずに閉じますか？", "はい", "いいえ"))
+                    {
+                        this.Close();
+                    }
                 }
             }
         }
