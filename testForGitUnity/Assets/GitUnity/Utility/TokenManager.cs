@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace GitUnity
+namespace GitUnity.Utility
 {
     public class TokenManager
     {

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using UnityEngine;
 
-namespace GitUnity
+namespace GitUnity.Utility
 {
     public static class LogUtility
     {

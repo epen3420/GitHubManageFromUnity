@@ -2,7 +2,9 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
+using GitUnity.Utility;
 
 namespace GitUnity.Repository
 {
@@ -32,15 +34,16 @@ namespace GitUnity.Repository
         /// <summary>
         /// Github上にレポジトリの作成
         /// </summary>
-        /// <param name="settings"></param>
+        /// <param name="repoSettings"></param>
         /// <returns></returns>
-        public async Task<bool> CreateRemoteRepo(RepositorySettings settings)
+        public async Task<bool> CreateRemoteRepo(string repoSettingPath)
         {
             // GitHub APIエンドポイント
             string url = "https://api.github.com/user/repos";
 
+            var repoSettings = AssetDatabase.LoadAssetAtPath<RepositorySettings>(repoSettingPath);
             // JSONデータを作成
-            string json = JsonUtility.ToJson(settings);
+            string json = JsonUtility.ToJson(repoSettings);
 
             try
             {
@@ -54,20 +57,20 @@ namespace GitUnity.Repository
 
                     if (response.IsSuccessStatusCode)
                     {
-                        LogUtility.Log($"Repository '{settings.name}' created successfully.");
+                        LogUtility.Log($"Repository '{repoSettings.name}' created successfully.");
                         return true;
                     }
                     else
                     {
                         string error = await response.Content.ReadAsStringAsync();
-                        LogUtility.LogError($"Failed to create repository '{settings.name}': {response.StatusCode} - {error}");
+                        LogUtility.LogError($"Failed to create repository '{repoSettings.name}': {response.StatusCode} - {error}");
                         return false;
                     }
                 }
             }
             catch (Exception ex)
             {
-                LogUtility.LogError($"Error creating repository '{settings.name}': {ex.Message}");
+                LogUtility.LogError($"Error creating repository '{repoSettings.name}': {ex.Message}");
                 return false;
             }
         }
@@ -95,7 +98,7 @@ namespace GitUnity.Repository
 
                 foreach (var command in commands)
                 {
-                    commandRunner.RunCommand(localRepoPath, command);
+                    commandRunner.RunCommand(localRepoPath, command, false);
                 }
                 return true;
             }
@@ -107,12 +110,22 @@ namespace GitUnity.Repository
             }
         }
 
+        public void OpenGithubPage(string repoName)
+        {
+            Application.OpenURL($"https://github.com/{TokenManager.GetToken().Split('%')[0]}/{repoName}");
+        }
+
+        public void OpenCommandPrompt()
+        {
+            commandRunner.RunCommand(localRepoPath, $"", true);
+        }
+
         /// <summary>
         /// GitHubDesktopの起動
         /// </summary>
         public void OpenGitHubDesktop()
         {
-            commandRunner.RunCommand(localRepoPath, OPEN_GITHUBDESKTOP);
+            commandRunner.RunCommand(localRepoPath, OPEN_GITHUBDESKTOP, false);
         }
     }
 }
