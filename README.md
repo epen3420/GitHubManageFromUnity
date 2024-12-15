@@ -21,14 +21,21 @@ GitHubのリポジトリの作成やクローン作成をサポートし、開�
 
 # Usage
 
-### 1. 初期設定(PATの変更後も)
+#### ①SetRepositoryウィンドウ
+![SetRepositoryウィンドウ](https://github.com/user-attachments/assets/934b6e6c-e204-4b5f-a1ed-1f8ab7f5aeb0)  
+*SetRepositoryウィンドウは、リポジトリとユーザー設定の管理を行うためのウィンドウです。*
 
-1. UnityのメニューバーTools/GitUnity/Set Repositoryを選択します。
+#### ②UserSettingsウィンドウ
+![UserSettingsウィンドウ](https://github.com/user-attachments/assets/5671e47d-7dbc-46f8-8874-99c1a2d331db)  
+*UserSettingsウィンドウでは、GitHubのユーザー名とPersonal Access Token(PAT)を入力できます。*
+
+### 1. 初期設定(PATの変更後も)
+1. UnityのメニューバーTools/GitUnity/Git Repository Managerを選択します。
    すると①のウィンドウが開きます。
 
 2. UserSettingsのボタンを押すと②のウィンドウが開きます。
 
-3. ウィンドウに表示される、次の項目を入力してください
+3. ②ウィンドウに表示される、次の項目を入力してください
    * GitHubのユーザー名
    * GitHubのPAT
    入力し、Saveボタンを押す。
@@ -37,26 +44,29 @@ GitHubのリポジトリの作成やクローン作成をサポートし、開�
 
 1. ①のウィンドウに戻ります。
    戻ったら、作成するレポジトリの次の項目を入力してください
-   * レポジトリ名
+   * 名前
    * 説明
    * 公開/非公開
 
 2. 入力し終わったら、CreateRepositoryボタンを押します。
 
-3. 少し待つと、レポジトリの作成とともに作成したレポジトリのページが開きますので、確認してください。
+3. すると、レポジトリ作成完了のダイアログとともに作成されたGitHubのレポジトリのページに飛ぶことができます。
 
 ### 3. ローカルレポジトリの設定
 
 1. 次にSelect local Repositoryボタンを押し、プッシュしたいフォルダを選択してください。
 
-2. 選択が終わるとLocal Repository patに設定されます。
+2. 選択が終わるとLocal Repository Pathに設定されます。
 
 3. 設定されたのを確認したら、InitialiseRepositoryボタンを押してください。
-   すると、選択したフォルダパスに作成したリモートレポジトリがクローンされ、利用可能になります。
+   すると、選択したフォルダパスに作成したローカルレポジトリが利用可能になります。
 
-### 4. GitHubDesktopの起動(任意)
+### 4. GitHubページを開く
+Open GitHub Pageボタンを押すと、作成されたレポジトリのページに飛ぶことができます
 
-Open GitHubDesktopボタンを押すと、GitHub Desktopでの利用ができるようになります。
+### 5. コマンドプロンプトかGitHubDesktopの起動
+
+Open your cmd or GitHubDesktopボタンを押すと、cmdかGitHub Desktopでローカルレポジトリを開くことができます。
 
 # Note
 
