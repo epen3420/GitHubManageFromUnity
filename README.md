@@ -16,7 +16,7 @@ GitHubのリポジトリの作成やクローン作成をサポートし、開�
 * PATの取得方法は以下を参照してください。なお、PATのアクセススコープは**repo**を選択してください  
   [personal access token (classic) の作成](https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-token-classic-%E3%81%AE%E4%BD%9C%E6%88%90)
 
-* GitHubDesktopのインストール方法は以下を参照してください（任意）
+* GitHubDesktopのインストール方法は以下を参照してください（任意）  
   [GitHubDesktopのインストール](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
 
 # Usage
