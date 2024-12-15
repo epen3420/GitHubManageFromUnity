@@ -23,7 +23,6 @@ namespace GitUnity.Editor
         private bool isPublic; // レポジトリの公開設定
         private const string REPO_SETTINGS_PATH = "Assets/Plugins/GitUnity/RepositorySettings.asset";
 
-
         private void OnEnable()
         {
             gitRepoManager = new GitRepositoryManager(new CommandRunner());
