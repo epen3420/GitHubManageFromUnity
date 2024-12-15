@@ -14,7 +14,7 @@ GitHubのリポジトリの作成やクローン作成をサポートし、開�
   [Gitのインストール](https://git-scm.com/book/ja/v2/%E4%BD%BF%E3%81%84%E5%A7%8B%E3%82%81%E3%82%8B-Git%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB)
 
 * PATの取得方法は以下を参照してください  
-  [personal access token (classic) の作成](https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-token-classic)
+  [personal access token (classic) の作成](https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-token-classic-%E3%81%AE%E4%BD%9C%E6%88%90)
 
 * GitHubDesktopのインストール方法は以下を参照してください（任意）
   [GitHubDesktopのインストール](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
