@@ -21,7 +21,8 @@ namespace GitUnity.Editor
         private string repoName = "New_Repository"; // 作成するリポジトリ名
         private string repoDescription = "Description"; // 作成するレポジトリの説明
         private bool isPublic; // レポジトリの公開設定
-        private const string REPO_SETTINGS_PATH = "Assets/GitUnity/RepositorySettings.asset";
+        private const string REPO_SETTINGS_PATH = "Assets/Plugins/GitUnity/RepositorySettings.asset";
+
 
         private void OnEnable()
         {
