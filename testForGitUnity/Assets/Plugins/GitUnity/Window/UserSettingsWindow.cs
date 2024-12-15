@@ -77,5 +77,11 @@ namespace GitUnity.Editor
                 }
             }
         }
+
+        private void OnDestroy()
+        {
+            var returnWindow = GetWindow<SetRepositoryWindow>();
+            returnWindow.Focus();
+        }
     }
 }
